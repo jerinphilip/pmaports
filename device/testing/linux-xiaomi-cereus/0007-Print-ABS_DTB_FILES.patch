@@ -1,0 +1,39 @@
+From 39c7154bb8bdb4428b305f41b1642e9155777682 Mon Sep 17 00:00:00 2001
+From: Jerin Philip <jerinphilip@live.in>
+Date: Mon, 11 Sep 2023 23:44:09 +0530
+Subject: [PATCH 7/7] Print ABS_DTB_FILES
+
+---
+ scripts/drvgen/drvgen.mk | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/drvgen/drvgen.mk b/scripts/drvgen/drvgen.mk
+index c4a0f25aa64f..3a7ffb78465a 100644
+--- a/scripts/drvgen/drvgen.mk
++++ b/scripts/drvgen/drvgen.mk
+@@ -85,8 +85,21 @@ endef
+ dtbs: $(objtree)/dtboimg.cfg
+ $(objtree)/dtboimg.cfg: FORCE
+ 	rm -f $@.tmp
++	$(info CONFIG_ARM is "$(CONFIG_ARM)")
++	$(info CONFIG_BUILD_ARM_APPENDED_DTB_IMAGE_NAMES is "$(CONFIG_BUILD_ARM_APPENDED_DTB_IMAGE_NAMES)")
++	$(info CONFIG_BUILD_ARM_DTB_OVERLAY_IMAGE_NAMES is "$(CONFIG_BUILD_ARM_DTB_OVERLAY_IMAGE_NAMES)" )
++	$(info CONFIG_ARM64 is "$(CONFIG_ARM64)" )
++	$(info CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE_NAMES is "$(CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE_NAMES)" )
++	$(info CONFIG_BUILD_ARM64_DTB_OVERLAY_IMAGE_NAMES is "$(CONFIG_BUILD_ARM64_DTB_OVERLAY_IMAGE_NAMES)" )
++	$(info MAIN_DTB_NAMES is "$(MAIN_DTB_NAMES)" )
++	$(info PROJ_DTB_NAMES is "$(PROJ_DTB_NAMES)" )
++	$(info MAIN_DTB_FILES is "$(MAIN_DTB_FILES)" )
++	$(info PROJ_DTB_FILES is "$(PROJ_DTB_FILES)" )
++	$(info PROJ_DTS_FILES is "$(PROJ_DTS_FILES)" )
+ 	$(foreach f,$(ABS_DTB_FILES),$(call mk_dtboimg_cfg,$(f),$@.tmp))
+-	if ! cmp -s $@.tmp $@; then \
++	if [[ -z $(ABS_DTB_FILES) ]]; then \
++		echo "Ignoring"; \
++	elif ! cmp -s $@.tmp $@; then \
+ 		mv $@.tmp $@; \
+ 	else \
+ 		rm $@.tmp; \
+-- 
+2.42.0
+

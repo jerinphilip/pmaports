@@ -1,0 +1,69 @@
+# Reference: <https://postmarketos.org/vendorkernel>
+# Kernel config based on: arch/arm64/configs/(CHANGEME!)
+
+pkgname=linux-xiaomi-cereus
+pkgver=4.9.119
+pkgrel=0
+pkgdesc="Xiaomi Redmi 6 kernel fork"
+arch="armv7"
+_carch="arm"
+_flavor="xiaomi-cereus"
+url="https://github.com/xiaomi-mt6765/android_kernel_xiaomi_mt6765"
+license="GPL-2.0-only"
+options="!strip !check !tracedeps pmb:cross-native"
+makedepends="
+	bash
+	bc
+	bison
+	devicepkg-dev
+	findutils
+	flex
+	openssl-dev
+	perl
+"
+
+# Source
+_repository="android_kernel_xiaomi_mt6765"
+_commit="31dbe7b6881b35094fa220a68f6c476c615f10dc"
+_config="config-$_flavor.$arch"
+source="
+	$pkgname-$_commit.tar.gz::https://github.com/xiaomi-mt6765/$_repository/archive/$_commit.tar.gz
+	$_config
+	0001-Remove-dtbo_check-from-dtbs-deps.patch
+	0002-gcc10-extern-YYLOC-global-declaration.patch
+	0003-Fix-compile-error-by-not-guarding-enum.patch
+	0004-find_best_idle_cpu-Move-defn-before-usage.patch
+	0005-Use-CONFIG_MTK_PLATFORM-instead-of-MTK_PLATFORM.patch
+	0006-Revert-Remove-dtbo_check-from-dtbs-deps.patch
+	0007-Print-ABS_DTB_FILES.patch
+"
+builddir="$srcdir/$_repository-$_commit"
+_outdir="out"
+
+prepare() {
+  default_prepare
+  . downstreamkernel_prepare
+}
+
+build() {
+  unset LDFLAGS
+  make O="$_outdir" ARCH="$_carch" CC="${CC:-gcc}" \
+    KBUILD_BUILD_VERSION="$((pkgrel + 1))-postmarketOS" KBUILD_VERBOSE=0
+}
+
+package() {
+  downstreamkernel_package "$builddir" "$pkgdir" "$_carch" \
+    "$_flavor" "$_outdir"
+}
+
+sha512sums="
+c543d691eac482c6bef8c6b5c42cf2643e53745ac437c659de6b31720e5e879cc5ecfab1ac63c60eea24acb7a9e40db5e54d3ac5a461c6136d073bdc1ff3560f  linux-xiaomi-cereus-31dbe7b6881b35094fa220a68f6c476c615f10dc.tar.gz
+f06fba6ae445e06dcdd03c6b8b1c80ab8ccdb3e998dab2d846668954483b70a2468fb801ef2774b6fcc96ff1e9d13103e2d30603568f64217e7969d7fcf7a4d4  config-xiaomi-cereus.armv7
+d0d766c5f68d4c68766b370f5665fe827e61b548044de507a8bccf9c0ccf3154a557d9c1cf19173c06608dcc8d805a439d2547da420f818d7675af8c07062727  0001-Remove-dtbo_check-from-dtbs-deps.patch
+ed3c8dbaa7eef3df4897c5f5816e4ebeed31d0531391e4a135881e5f6595c01ec864de61ba283c29424352c14f764156c1688de0db11b71eeda8498003989a69  0002-gcc10-extern-YYLOC-global-declaration.patch
+aa8d6e070f68eae27e54280d8b8e580f15a5aa22f9a1ae44190a7b53225bf57f18b8ed7c387f9b67a9de5df91f009bc6720ec6c0d2e5fddf7cd1bbcf787d6d06  0003-Fix-compile-error-by-not-guarding-enum.patch
+d0332ad533728a0138a589cc08292034b784ed377d63c4ecfbbbe01ccbebb075535bcc2e2d4ade5a834b5d59c46e9458ef91d4744324ce973295f1b10c516b26  0004-find_best_idle_cpu-Move-defn-before-usage.patch
+e5b97d28de66ab751e44eda1dbf42e15f98359959ddea45280ec8e5bdf6d116e67f196530caa7c9091f5e123189c8a3c2bca99116f54071b832bc6492b3e4a4a  0005-Use-CONFIG_MTK_PLATFORM-instead-of-MTK_PLATFORM.patch
+bb72b3e88f3d5aadcaf82ee7794bf5b4c3ad752dc80dc47288f3e72e04aabed77c554e88675e02b2cc8aa83733bb4fe60f95ffbe69c99c1a4a683a3ab54708c2  0006-Revert-Remove-dtbo_check-from-dtbs-deps.patch
+15532c8bc86ce93fff789df77741a2723265d7cf8497b99f07ab9b0631f38460d859e374b80ea44a8e2a68a1d92f9915c6b2f9cd214ba35e9ccff991588438fa  0007-Print-ABS_DTB_FILES.patch
+"

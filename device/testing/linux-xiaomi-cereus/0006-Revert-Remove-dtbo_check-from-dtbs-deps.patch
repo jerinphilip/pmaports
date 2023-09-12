@@ -1,0 +1,26 @@
+From 8cba2c7578f6cea6d17e54abf7e927b3274d2536 Mon Sep 17 00:00:00 2001
+From: Jerin Philip <jerinphilip@live.in>
+Date: Mon, 11 Sep 2023 21:24:45 +0530
+Subject: [PATCH 6/7] Revert "Remove `dtbo_check` from `dtbs` deps"
+
+This reverts commit 039b663f2d5e2a4db1c6993a36ac15e2a5f885f9.
+---
+ arch/arm64/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 0404147ec371..9bba34e7e4e2 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -156,7 +156,7 @@ zinstall install:
+ 
+ PHONY += dtbs dtbs_install
+ 
+-dtbs: prepare scripts 
++dtbs: prepare scripts dtbo_check
+ 	$(Q)$(MAKE) $(build)=$(boot)/dts
+ 
+ dtbs_install:
+-- 
+2.42.0
+
