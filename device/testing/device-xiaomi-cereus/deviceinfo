@@ -7,7 +7,6 @@ deviceinfo_name="Xiaomi Redmi 6"
 deviceinfo_manufacturer="Xiaomi"
 deviceinfo_codename="xiaomi-cereus"
 deviceinfo_year="2018"
-deviceinfo_dtb=""
 deviceinfo_arch="armv7"
 
 # Device related
