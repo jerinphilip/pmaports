@@ -1,0 +1,61 @@
+name: "main"
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "v*.*.*"
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  e2e:
+      name: "e2e"
+      runs-on: "ubuntu-latest"
+
+      steps:
+
+
+        - name: Install dependencies
+          run: |
+            git clone https://git.sr.ht/~postmarketos/pmbootstrap
+            mkdir -p $HOME/.local/bin
+            sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/bin/pmbootstrap
+            pmbootstrap --version
+            sudo apt-get install expect
+
+        - name: Write configuration file
+          run: |
+            wget https://raw.githubusercontent.com/jerinphilip/pmaports/${{github.sha}}/.ci/xiaomi-cereus.prompt 
+
+        - name: Initialize
+          run: |
+            cat xiaomi-cereus.prompt | pmbootstrap init
+            cat $HOME/.config/pmbootstrap.cfg
+
+        - name: Swap active branch in workspace pmaports
+          run: |
+            cd pmws/cache_git/pmaports
+            rm -rv device/testing/{linux,device}-xiaomi-cereus 
+            git remote add jp https://github.com/${{github.repository}}
+            git fetch jp -a
+            git checkout xiaomi-cereus
+
+        - name: Build
+          run: |
+            pmbootstrap -v --details-to-stdout build linux-xiaomi-cereus
+
+        - name: Install
+          run: |
+            # pmbootstrap -v --details-to-stdout install
+            ./pmws/cache_git/pmaports/.ci/pmbinstall.expect
+
+        - name: Upload logs
+          uses: actions/upload-artifact@v2
+          if: ${{ always() }}
+          with:
+            name: build-artifacts
+            path: |-
+              pmws/log.txt
+

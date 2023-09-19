@@ -1,0 +1,21 @@
+workspace
+channel
+vendor
+codename
+new-device?
+arch
+Manufacturer
+Name
+Year of Release
+Type
+Hardware Keyboard?
+External Memory?
+Flash method: fastboot, mtkclient, ?
+user
+UI: console, gnome..?
+Additional change them?
+Extra Packages
+TimeZone use host?
+Locale
+Hostname
+Build outdated packages?
