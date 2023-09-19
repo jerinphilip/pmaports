@@ -1,5 +1,5 @@
 # Reference: <https://postmarketos.org/vendorkernel>
-# Kernel config based on: arch/arm64/configs/(CHANGEME!)
+# Kernel config based on: arch/arm/configs/ranchu_defconfig
 
 pkgname=linux-xiaomi-cereus
 pkgver=4.9.119
@@ -37,19 +37,19 @@ builddir="$srcdir/$_repository-$_commit"
 _outdir="out"
 
 prepare() {
-  default_prepare
-  . downstreamkernel_prepare
+	default_prepare
+	. downstreamkernel_prepare
 }
 
 build() {
-  unset LDFLAGS
-  make O="$_outdir" ARCH="$_carch" CC="${CC:-gcc}" \
-    KBUILD_BUILD_VERSION="$((pkgrel + 1))-postmarketOS" KBUILD_VERBOSE=0
+	unset LDFLAGS
+	make O="$_outdir" ARCH="$_carch" CC="${CC:-gcc}" \
+	  KBUILD_BUILD_VERSION="$((pkgrel + 1))-postmarketOS" KBUILD_VERBOSE=0
 }
 
 package() {
-  downstreamkernel_package "$builddir" "$pkgdir" "$_carch" \
-    "$_flavor" "$_outdir"
+	downstreamkernel_package "$builddir" "$pkgdir" "$_carch" \
+	  "$_flavor" "$_outdir"
 }
 
 sha512sums="
