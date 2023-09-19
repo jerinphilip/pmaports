@@ -1,0 +1,33 @@
+# Reference: <https://postmarketos.org/devicepkg>
+pkgname=device-xiaomi-cereus
+pkgdesc="Xiaomi Redmi 6"
+pkgver=0.1
+pkgrel=0
+url="https://postmarketos.org"
+license="MIT"
+arch="armv7"
+options="!check !archcheck"
+depends="
+	linux-xiaomi-cereus
+	mkbootimg
+	postmarketos-base
+	msm-fb-refresher
+"
+makedepends="devicepkg-dev"
+source="
+	deviceinfo
+	modules-initfs
+"
+
+build() {
+  devicepkg_build $startdir $pkgname
+}
+
+package() {
+  devicepkg_package $startdir $pkgname
+}
+
+sha512sums="
+544ec7dedbf2471eba1fce425a8e98f6b6d3cf1e73a447a42f8b2715391aa6b3b3f2502e822c1eef77f24b79343bfd808ab6ef58d17d23b0aacb56f3b87c3efc  deviceinfo
+03cab135b4d8d249724a36e30af94404ad56fb14f30819838a2fa35a84ec4f65152a72db7534c97fcfe0aa4de16c112f556f799f66ec8134f76aba84efc3eafa  modules-initfs
+"
